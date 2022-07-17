@@ -181,7 +181,7 @@ Resources:
   AlertingRole:
    Type: AWS::IAM::Role
    Properties:
-      RoleName: Test_Alert_Role
+      RoleName: Test_Alert_Role_After
       Description: "Alerting Role"
       PermissionsBoundary: !Sub 'arn:aws:iam::${AWS::AccountId}:policy/LZ-IAM-Boundary'
       AssumeRolePolicyDocument:
