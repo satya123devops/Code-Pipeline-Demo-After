@@ -1,0 +1,51 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      python: 3.7
+    commands:
+      - echo "Starting install - $(date)"
+
+      - echo "Installing AWS SAM CLI"
+      - pip install aws-sam-cli
+
+      - echo "Installing CloudFormation template linting tool cfn-lint"
+      - pip install cfn-lint
+
+      - echo "Completed install - $(date)"
+      - export CLOUD_FRONT_IDD=$(aws cloudformation describe-stacks --stack-name ${STACK_NAME} --query "Stacks[*].Outputs[?OutputKey=='CloudFrontId'].OutputValue" --output text)
+      - echo $CLOUD_FRONT_IDD
+ 
+  pre_build:
+    commands:
+      - echo "Starting pre_build - $(date)"
+
+      - echo "Linting CloudFormation template"
+      - cd $CODEBUILD_SRC_DIR
+      - cfn-lint --version
+      # https://github.com/aws-cloudformation/cfn-python-lint/issues/1265#issuecomment-568525313
+#      - cfn-lint --ignore-checks W3011 --append-rules $CODEBUILD_SRC_DIR_LintRules --template ${TEMPLATE_PATH}
+
+      - echo "Copying Cirrus Authenticators template from S3"
+      - aws s3 cp s3://lly-templates/cirrus/cloudformation/cirr-aws-authenticators/latest.yaml codebuild-api-authenticators/authenticators.yaml
+
+      - echo "Completed pre_build - $(date)"
+  build:
+    commands:
+      - echo "Starting build - $(date)"
+
+      - sam build --template-file ${TEMPLATE_PATH}
+      ### YOU MUST SPECIFY A KMS KEY TO USE WHEN PACKAGING YOUR TEMPLATE ###
+      - sam package --template-file .aws-sam/build/template.yaml --kms-key-id alias/aws/s3 --s3-bucket ${S3_DEPLOY_BUCKET} --output-template-file ${TEMPLATE_PATH}
+
+      - echo "Completed build - $(date)"
+artifacts:
+  files:
+    - ${TEMPLATE_PATH}
+    - ${PARAMETER_FILE_NAME}
+  discard-paths: no
+  
+env:
+  exported-variables:
+    - CLOUD_FRONT_IDD

@@ -1,0 +1,230 @@
+AWSTemplateFormatVersion: 2010-09-09
+Transform: 'AWS::Serverless-2016-10-31'
+Description: >
+  PROJECT_NAME Deployment Resources
+Parameters:
+  AppName:
+    Type: String
+  CloudFrontAccessPrefix:
+    Type: String
+    Default: PUBLIC
+    AllowedPattern: "[a-zA-Z0-9-]+"
+    ConstraintDescription: "must contain only alphanumerics and hyphens and cannot be empty"
+  DeployEnvironment:
+    Type: String
+  CloudFrontPriceClass:
+        Type: String
+        Default: PriceClass_100
+        AllowedValues:
+            - PriceClass_100
+            - PriceClass_200
+            - PriceClass_All
+  CloudFrontRequireAuth:
+    Description: >
+      Add a Lambda@Edge authorizer to the CloudFront distribution for authenticated access. 
+      If this is set to true, you must create your stack in us-east-1 (N. Virginia).
+    Type: String
+    Default: "false"
+    AllowedValues:
+      - "true"
+      - "false"
+  EmptyWebBucketOnDelete:
+    Description: Empty the web bucket on stack deletion, which allows the bucket to be deleted.
+    Type: String
+  CostCenter:
+    Type: String
+    Default: "YOUR_COST_CENTER"
+  CostCenterApprover:
+    Type: String
+    Default: "YOUR_COST_CENTER_APPROVER"
+  SystemOwner:
+    Type: String
+    Default: "YOUR_SYSTEM_OWNER"
+  SystemCustodian:
+    Type: String
+    Default: "YOUR_SYSTEM_CUSTODIAN"
+  PrimaryItContact:
+    Type: String
+    Default: "YOUR_PRIMARY_IT_CONTACT"
+  Level1BusinessArea:
+    Type: String
+    Default: "YOUR_LEVEL1_BUSINESS_AREA"
+  DataClassification:
+    Type: String
+    Default: "Yellow"
+    AllowedValues:
+      - "Green"
+      - "Yellow"
+      - "Orange"
+      - "Red"
+      - "TBD"
+  Hipaa:
+    Type: String
+    Default: "Yes"
+    AllowedValues:
+      - "Yes"
+      - "No"
+      - "TBD"
+  CloudfrontDistributionID:
+    Type: String
+    Default: "E3N6JGP7XBGZ2F"
+      
+Conditions:
+  CloudFrontRequireAuth: !Equals [!Ref CloudFrontRequireAuth, "true"]
+  
+Mappings:
+  EdatPipelineV2:
+    Telemetry:
+      DefaultArn: arn:aws:sqs:us-east-1:909350678585:PipelineTelemetry
+      DEV: arn:aws:sqs:us-east-1:933088013595:PipelineTelemetry
+      QA: arn:aws:sqs:us-east-1:876128744739:PipelineTelemetry
+      DLZ: arn:aws:sqs:us-east-1:159571097500:PipelineTelemetry
+  TemplateProperties:
+    Metadata:
+      Name: "pipeline-v2"
+      Version: "2.18.0"
+      PrimaryItContact: "c276669"
+      Repo: "https://github.com/EliLillyCo/lilly-shared-templates"
+      TemplateLocation: "https://lly-templates.s3.us-east-2.amazonaws.com/shared/cloudformation/deployment_pipelines_v2/cfn-pipeline.yaml"
+
+Resources:
+  WebsiteCloudFront:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        DefaultCacheBehavior:
+          Compress: true
+          AllowedMethods:
+            - GET
+            - HEAD
+            - OPTIONS
+          ForwardedValues:
+            QueryString: false
+          ViewerProtocolPolicy: redirect-to-https
+          TargetOriginId: S3WebsiteOrigin
+        DefaultRootObject: index.html
+        Enabled: true
+        Origins:
+          - DomainName: !Sub
+            - "${BucketName}.s3.amazonaws.com"
+            - { BucketName: !Ref WebS3Bucket }
+            Id: S3WebsiteOrigin
+            OriginPath: !Join
+              - ""
+              - - /
+                - !Ref CloudFrontAccessPrefix
+            S3OriginConfig:
+              OriginAccessIdentity: !Join
+                - ""
+                - - origin-access-identity/cloudfront/
+                  - !Ref CloudFrontAccessIdentity
+        PriceClass: !Ref CloudFrontPriceClass
+        CustomErrorResponses:
+          -
+            ErrorCode: 403
+            ResponseCode: 200
+            ResponsePagePath: "/index.html"
+  
+  CloudFrontAccessIdentity:
+    Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
+    Properties:
+      CloudFrontOriginAccessIdentityConfig:
+        Comment: !Sub "${AppName} CloudFront Origin Identity"
+
+  WebS3Bucket:
+    Type: Custom::LillyBucketBuilder
+    Properties:
+      ServiceToken: !ImportValue RVM-LambdaARN
+      BucketNamePrefix: !Ref AppName
+      BucketAccess:
+        ReadWriteAccess:
+          '*':
+            - Fn::ImportValue: !Sub "${AWS::StackName}-CodeBuildRoleArn"
+            - Fn::ImportValue: !Sub "${AWS::StackName}-CloudFormationRoleArn"
+        PermissionScopes:
+          Account: false
+      CloudFrontAccess:
+        CanonicalUser: !GetAtt "CloudFrontAccessIdentity.S3CanonicalUserId"
+        Prefix: !Ref CloudFrontAccessPrefix
+      BucketConfiguration:
+        EmptyBucketOnDelete: !Ref EmptyWebBucketOnDelete
+      Tags:
+        CostCenter: !Ref CostCenter
+        CostCenterApprover: !Ref CostCenterApprover
+        SystemOwner: !Ref SystemOwner
+        SystemCustodian: !Ref SystemCustodian
+        PrimaryItContact: !Ref PrimaryItContact
+        Level1BusinessArea: !Ref Level1BusinessArea
+        DataClassification: !Ref DataClassification
+        Hipaa: !Ref Hipaa
+        
+  CirrusAuthenticators:
+    Condition: CloudFrontRequireAuth
+    Type: AWS::Serverless::Application
+    Properties:
+      Location: codebuild-api-authenticators/authenticators.yaml
+      Parameters:
+        LogLevel: WARN
+        ApiAuthExpectedAudience: "aud_tutorial"
+        ApiAuthExpectedIssuer: "https://gateway-v2-api.lillyapi.com"
+        EdgeAuthCloudFrontDistributionId: !Ref CloudfrontDistributionID
+        PermissionsBoundary: "TRUE"
+        CostCenter: !Ref CostCenter
+        CostCenterApprover: !Ref CostCenterApprover
+        SystemOwner: !Ref SystemOwner
+        SystemCustodian: !Ref SystemCustodian
+        PrimaryItContact: !Ref PrimaryItContact
+        Level1BusinessArea: !Ref Level1BusinessArea
+        DataClassification: !Ref DataClassification
+        Hipaa: !Ref Hipaa
+            
+  AlertingRole:
+   Type: AWS::IAM::Role
+   Properties:
+      RoleName: Test_Alert_Role
+      Description: "Alerting Role"
+      PermissionsBoundary: !Sub 'arn:aws:iam::${AWS::AccountId}:policy/LZ-IAM-Boundary'
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - "lambda.amazonaws.com"
+                - "cloudformation.amazonaws.com"
+                - "codepipeline.amazonaws.com"
+            Action: 
+              - sts:AssumeRole
+      Policies:
+        - PolicyName: alert_testing
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Action:
+                  - "codepipeline:*"
+                  - "codebuild:*"
+                  - "sns:*"
+                  - "cloudformation:*"
+                  - "codestar-notifications:*"
+                Effect: Allow
+                Resource:
+                  - "*"   
+ 
+Outputs:
+  CloudFrontUrl:
+    Value: !Sub
+      - "https://${Domain}"
+      - { Domain: !GetAtt "WebsiteCloudFront.DomainName" }
+  CloudFrontId:
+    Value: !Ref WebsiteCloudFront
+    Export:
+      Name: CloudFrontCodePipelineDemo
+  WebBucket:
+    Description: Location to put SPA static files
+    Value: !Join
+             - ""
+             - - !Ref WebS3Bucket
+               - "/"
+               - !Ref CloudFrontAccessPrefix
+  DeployEnvironment:
+    Value: !Ref DeployEnvironment

@@ -1,0 +1,27 @@
+{
+  "Parameters": {
+    "DeployEnvironment": "qa",
+    "CloudFrontRequireAuth": "true",
+    "EmptyWebBucketOnDelete": "true",
+    "AppName": "REPO_NAME",
+    "CostCenter": "YOUR_COST_CENTER",
+    "CostCenterApprover": "YOUR_COST_CENTER_APPROVER",
+    "SystemOwner": "YOUR_SYSTEM_OWNER",
+    "SystemCustodian": "YOUR_SYSTEM_CUSTODIAN",
+    "PrimaryItContact": "YOUR_PRIMARY_IT_CONTACT",
+    "Level1BusinessArea": "YOUR_LEVEL1_BUSINESS_AREA",
+    "DataClassification": "DATA_CLASSIFICATION_(Green/Yellow/Orange/Red)",
+    "Hipaa": "HIPPA_(Yes/No)"
+  },
+  "Tags": {
+    "CostCenter": "YOUR_COST_CENTER",
+    "CostCenterApprover": "YOUR_COST_CENTER_APPROVER",
+    "SystemOwner": "YOUR_SYSTEM_OWNER",
+    "SystemCustodian": "YOUR_SYSTEM_CUSTODIAN",
+    "PrimaryItContact": "YOUR_PRIMARY_IT_CONTACT",
+    "Level1BusinessArea": "YOUR_LEVEL1_BUSINESS_AREA",
+    "DataClassification": "DATA_CLASSIFICATION_(Green/Yellow/Orange/Red)",
+    "Hipaa": "HIPPA_(Yes/No)"
+  },
+  "StackPolicy": {}
+}
