@@ -3,7 +3,7 @@
     "DeployEnvironment": "dev",
     "CloudFrontRequireAuth": "true",
     "EmptyWebBucketOnDelete": "true",
-    "AppName": "mdit-infohub-codepipeline-After",
+    "AppName": "mdit-infohub-codepipeline-after",
     "CostCenter": "100ARAS",
     "CostCenterApprover": "supancik_kent_a@lilly.com",
     "SystemOwner": "YOUR_SYSTEM_OWNER",
