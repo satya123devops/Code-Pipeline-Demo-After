@@ -158,25 +158,25 @@ Resources:
         DataClassification: !Ref DataClassification
         Hipaa: !Ref Hipaa
         
-  CirrusAuthenticators:
-    Condition: CloudFrontRequireAuth
-    Type: AWS::Serverless::Application
-    Properties:
-      Location: codebuild-api-authenticators/authenticators.yaml
-      Parameters:
-        LogLevel: WARN
-        ApiAuthExpectedAudience: "aud_tutorial"
-        ApiAuthExpectedIssuer: "https://gateway-v2-api.lillyapi.com"
-        EdgeAuthCloudFrontDistributionId: !Ref CloudfrontDistributionID
-        PermissionsBoundary: "TRUE"
-        CostCenter: !Ref CostCenter
-        CostCenterApprover: !Ref CostCenterApprover
-        SystemOwner: !Ref SystemOwner
-        SystemCustodian: !Ref SystemCustodian
-        PrimaryItContact: !Ref PrimaryItContact
-        Level1BusinessArea: !Ref Level1BusinessArea
-        DataClassification: !Ref DataClassification
-        Hipaa: !Ref Hipaa
+  # CirrusAuthenticators:
+  #   Condition: CloudFrontRequireAuth
+  #   Type: AWS::Serverless::Application
+  #   Properties:
+  #     Location: codebuild-api-authenticators/authenticators.yaml
+  #     Parameters:
+  #       LogLevel: WARN
+  #       ApiAuthExpectedAudience: "aud_tutorial"
+  #       ApiAuthExpectedIssuer: "https://gateway-v2-api.lillyapi.com"
+  #       EdgeAuthCloudFrontDistributionId: !Ref CloudfrontDistributionID
+  #       PermissionsBoundary: "TRUE"
+  #       CostCenter: !Ref CostCenter
+  #       CostCenterApprover: !Ref CostCenterApprover
+  #       SystemOwner: !Ref SystemOwner
+  #       SystemCustodian: !Ref SystemCustodian
+  #       PrimaryItContact: !Ref PrimaryItContact
+  #       Level1BusinessArea: !Ref Level1BusinessArea
+  #       DataClassification: !Ref DataClassification
+  #       Hipaa: !Ref Hipaa
             
   AlertingRole:
    Type: AWS::IAM::Role
