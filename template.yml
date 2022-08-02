@@ -177,6 +177,8 @@ Resources:
   #       Level1BusinessArea: !Ref Level1BusinessArea
   #       DataClassification: !Ref DataClassification
   #       Hipaa: !Ref Hipaa
+
+  
             
   AlertingRole:
    Type: AWS::IAM::Role
