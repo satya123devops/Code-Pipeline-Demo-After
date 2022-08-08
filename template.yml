@@ -183,7 +183,7 @@ Resources:
   AlertingRole:
    Type: AWS::IAM::Role
    Properties:
-      RoleName: Test_Alert_Role_After_Demo
+      RoleName: Test_Alert_Role_After_Demo_part1
       Description: "Alerting Role"
       PermissionsBoundary: !Sub 'arn:aws:iam::${AWS::AccountId}:policy/LZ-IAM-Boundary'
       AssumeRolePolicyDocument:
@@ -220,7 +220,7 @@ Outputs:
   CloudFrontId:
     Value: !Ref WebsiteCloudFront
     Export:
-      Name: CloudFrontCodePipelineDemo5
+      Name: CloudFrontCodePipelineDemo7
   WebBucket:
     Description: Location to put SPA static files
     Value: !Join
