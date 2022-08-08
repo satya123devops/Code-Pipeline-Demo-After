@@ -131,6 +131,7 @@ Resources:
       CloudFrontOriginAccessIdentityConfig:
         Comment: !Sub "${AppName} CloudFront Origin Identity"
 
+
   WebS3Bucket:
     Type: Custom::LillyBucketBuilder
     Properties:

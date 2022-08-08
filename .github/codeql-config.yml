@@ -1,9 +1,0 @@
-name: "CodeQL config"
-
-disable-default-queries: true
-
-queries:  
-  - name: security-extended
-    uses: security-extended
-  - name: Security and Quality
-    uses: security-and-quality
