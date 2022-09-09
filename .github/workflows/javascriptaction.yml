@@ -30,7 +30,7 @@ jobs:
     - run: npm install
           
     - name: Combine Dependabot Pull Requests
-      uses: satya123devops/dependabot-action@v3
+      uses: satya123devops/dependabot-action@v4
       with:
         branchPrefix: "dependabot"
         mustBeGreen: true
