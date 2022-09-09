@@ -35,3 +35,5 @@ If you enable Lambda@Edge authorization, you will only be able to deploy your ap
 ├── src/                              <-- Directory containing web application code
 └── template.yml                      <-- Application deployment resources CloudFormation template
 ```
+
+
