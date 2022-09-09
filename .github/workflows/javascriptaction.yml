@@ -27,7 +27,7 @@ jobs:
       with:
           who-to-greet: 'Satya the Octocat'
           
-    - run: npm ci
+    - run: npm install
           
     - name: Combine Dependabot Pull Requests
       uses: satya123devops/dependabot-action@v3
