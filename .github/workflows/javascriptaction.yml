@@ -27,6 +27,8 @@ jobs:
       with:
           who-to-greet: 'Satya the Octocat'
           
+    - run: npm ci
+          
     - name: Combine Dependabot Pull Requests
       uses: satya123devops/dependabot-action@v3
       with:
@@ -37,3 +39,4 @@ jobs:
         ignoreLabel: "nocombine"
         baseBranch: "main"
         openPR: true
+     
