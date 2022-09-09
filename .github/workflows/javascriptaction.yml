@@ -1,0 +1,39 @@
+name: "Testing First Custom Action with JavaScript"
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    # The branches below must be a subset of the branches above
+    branches: [ master ]
+  schedule:
+    - cron: '19 6 * * 6'
+
+jobs:
+  analyze:
+    name: Analyze
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Testing first custom action
+      uses: satya123devops/sample-action-octo-demo-javascript@v2
+      with:
+          who-to-greet: 'Satya the Octocat'
+          
+    - name: Combine Dependabot Pull Requests
+        uses: satya123devops/dependabot-action@v1
+        with:
+          branchPrefix: "dependabot"
+          mustBeGreen: true
+          combineBranchName: "combined-dependabot-prs"
+          githubToken: ${{ secrets.COMBINE_PRS_TOKEN }}
+          ignoreLabel: "nocombine"
+          baseBranch: "main"
+          openPR: true
