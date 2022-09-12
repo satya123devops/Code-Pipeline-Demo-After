@@ -31,10 +31,10 @@ jobs:
       uses: satya123devops/dependabot-action@v7
       with:
         branchPrefix: "dependabot"
-        #mustBeGreen: true
-        #combineBranchName: "combined-dependabot-prs"
+        mustBeGreen: true
+        combineBranchName: "combined-dependabot-prs"
         #githubToken: ${{ secrets.COMBINE_PRS_TOKEN }}
-        #ignoreLabel: "nocombine"
+        ignoreLabel: "nocombine"
         baseBranch: "main"
-        #openPR: true
+        openPR: true
      
