@@ -28,7 +28,7 @@ jobs:
           who-to-greet: 'Satya the Octocat'
           
     - name: Combine Dependabot Pull Requests
-      uses: satya123devops/dependabot-action@v8
+      uses: satya123devops/dependabot-action@v9
       with:
         #branchPrefix: "dependabot"
         #ustBeGreen: true
