@@ -27,12 +27,10 @@ jobs:
       with:
           who-to-greet: 'Satya the Octocat'
           
-    - run: npm install
-          
     - name: Combine Dependabot Pull Requests
       uses: satya123devops/dependabot-action@v7
       with:
-        #branchPrefix: "dependabot"
+        branchPrefix: "dependabot"
         #mustBeGreen: true
         #combineBranchName: "combined-dependabot-prs"
         #githubToken: ${{ secrets.COMBINE_PRS_TOKEN }}
