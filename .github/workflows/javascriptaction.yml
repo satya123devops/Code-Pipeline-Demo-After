@@ -28,13 +28,13 @@ jobs:
           who-to-greet: 'Satya the Octocat'
           
     - name: Combine Dependabot Pull Requests
-      uses: satya123devops/dependabot-action@v7
+      uses: satya123devops/dependabot-action@v8
       with:
-        branchPrefix: "dependabot"
-        mustBeGreen: true
-        combineBranchName: "combined-dependabot-prs"
+        #branchPrefix: "dependabot"
+        #ustBeGreen: true
+        #combineBranchName: "combined-dependabot-prs"
         #githubToken: ${{ secrets.COMBINE_PRS_TOKEN }}
-        ignoreLabel: "nocombine"
+        #ignoreLabel: "nocombine"
         baseBranch: "main"
-        openPR: true
+        #openPR: true
      
