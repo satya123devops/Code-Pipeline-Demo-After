@@ -23,7 +23,7 @@ jobs:
       uses: actions/checkout@v3
 
 #     - name: Testing first custom action
-#       uses: satya123devops/sample-action-octo-demo-javascript@v2
+#       uses: satya123devops/sample-action-octo-demo-javascript@v1.1
 #       with:
 #           who-to-greet: 'Satya the Octocat'
           
