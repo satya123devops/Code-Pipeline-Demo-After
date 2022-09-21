@@ -23,8 +23,9 @@ jobs:
       uses: actions/checkout@v3
           
     - name: Combine Dependabot Pull Requests
-      uses: satya123devops/dependabot-action@v1.0
+      uses: satya123devops/dependabot-action@v2.1
       with:
         githubToken: ${{ secrets.API_TOKEN }}
         baseBranch: "main"
+        manifestFileName: "test"
      
