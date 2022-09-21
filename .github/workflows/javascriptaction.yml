@@ -27,5 +27,5 @@ jobs:
       with:
         githubToken: ${{ secrets.API_TOKEN }}
         baseBranch: "main"
-        manifestFileName: "test"
+        manifestFileName: "package.json"
      
