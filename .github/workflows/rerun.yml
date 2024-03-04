@@ -1,0 +1,23 @@
+name: Deploy cloudformation
+ 
+on: 
+  push:     
+    branches:
+      - dev
+      - develop
+      - qa
+      - main
+      - master
+permissions: read-all
+jobs:
+  no_reruns:
+      runs-on: ubuntu-latest
+      steps:
+        - name: No reruns please
+          run: |
+           if [ "$GITHUB_RUN_ATTEMPT" -gt 1 ]; then
+              echo "No re-runs for you. Go away."
+              exit 1
+            else
+              echo "not a re-run"
+            fi
