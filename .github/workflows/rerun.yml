@@ -1,4 +1,4 @@
-name: Deploy cloudformation
+name: Re-Running the Workflow
  
 on: 
   push:     
